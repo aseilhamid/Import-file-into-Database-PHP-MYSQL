@@ -1,9 +1,9 @@
 <?php
 //Connection variables
-$SERVER = "localhost";
-$username = "root";
-$PASSWORD = "";
-$db = "work";
+// $SERVER = "localhost";
+// $username = "root";
+// $PASSWORD = "";
+// $db = "work";
 
 $error_msg = '';
 $success_msg = '';
@@ -11,14 +11,22 @@ $result;
 $number_of_pages = 1;
 
 //Connection
-$conn = new mysqli($SERVER, $username,$PASSWORD);
+// $conn = new mysqli($SERVER, $username,$PASSWORD);
+$url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+
+$server = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$db = substr($url["path"], 1);
+
+$conn = new mysqli($server, $username, $password);
 
 //create db
 $sql = "CREATE DATABASE " .$db;
 $conn->query($sql);
 
 //New connection with the created db = "work"
-$conn = new mysqli($SERVER, $username, $PASSWORD, $db);
+$conn = new mysqli($server, $username, $password, $db);
 
 // Create table in the database
 if (isset($_POST['creatdb'])) {
