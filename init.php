@@ -1,24 +1,26 @@
 <?php
-$error_msg = '';
-$success_msg = '';
-$result;
+//Connection variables
 $SERVER = "localhost";
 $username = "root";
 $PASSWORD = "";
 $db = "work";
+
+$error_msg = '';
+$success_msg = '';
+$result;
 $number_of_pages = 1;
 
-//connection
+//Connection
 $conn = new mysqli($SERVER, $username,$PASSWORD);
 
 //create db
 $sql = "CREATE DATABASE " .$db;
 $conn->query($sql);
 
-//new connection with the created db = "work"
+//New connection with the created db = "work"
 $conn = new mysqli($SERVER, $username, $PASSWORD, $db);
 
-// create table in the database
+// Create table in the database
 if (isset($_POST['creatdb'])) {
 
   $sql = "CREATE TABLE data (
@@ -39,19 +41,22 @@ if (isset($_POST['creatdb'])) {
   }
 }
 
-// upload .csv file into database 
+//Upload .csv file into database 
 if (isset($_POST["import"])) {
 
+  //Check if file .csv extention
   if ($_FILES['file']['name']) {
     $filexe = explode(".", $_FILES['file']['name']);    
     if (end($filexe) == "csv") {
       $filename = $_FILES['file']['name'];
 
+      //change [#,@] to [,] delimiter
       move_uploaded_file($_FILES['file']['tmp_name'], $filename);
       $updatefile = file_get_contents($filename);
       $updatefile = str_replace(str_split('#@'), ",", $updatefile);
       file_put_contents($filename, $updatefile);
 
+      //insert file data into database
       $handle = fopen($filename, "r");
       while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         $sql = "INSERT INTO data(client_id, client, deal_id, deal, hour, accepted, refused)
@@ -60,15 +65,17 @@ if (isset($_POST["import"])) {
       }
       fclose($handle);
       header("location: index.php?create=1");
-    } else {
+    } else { 
+      //File not .csv
       $error_msg = 'Please Select .CSV File only';
     }
-  } else {
+  }else {
+    //No file selected
     $error_msg = 'Please Select File';
   }
 }
 
-// reset all
+//Drop database & table
 if (isset($_POST['reset'])) {
   $sql = "DROP DATABASE work";
   $conn->query($sql);
@@ -89,22 +96,20 @@ if(!isset($_POST['reset'])){
  $sql = "SELECT * FROM data";  
  $result = $conn->query($sql);  
  if($result){
- $number_of_result = $result->num_rows;
+  $number_of_result = $result->num_rows;
 
-//no of pages
- $number_of_pages = ceil($number_of_result / $results_per_page);
+  //no of pages
+  $number_of_pages = ceil($number_of_result / $results_per_page);
 
- if(!isset($_GET['page'])){
-     $page = 1;
- }else{
-     $page = $_GET['page'];
- }
+  if(!isset($_GET['page'])){
+      $page = 1;
+  }else{
+      $page = $_GET['page'];
+  }
 
- $offset = ($page - 1) * $results_per_page;
+  $offset = ($page - 1) * $results_per_page;
 
- $sql = "SELECT * FROM data LIMIT " . $offset . ',' . $results_per_page;
- $result = $conn->query($sql);
+  $sql = "SELECT * FROM data LIMIT " . $offset . ',' . $results_per_page;
+  $result = $conn->query($sql);
+  }
 }
-}
-
-?>

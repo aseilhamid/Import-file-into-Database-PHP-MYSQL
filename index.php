@@ -1,7 +1,5 @@
 <?php
 require "init.php";
-//static $i = 1;
-
 ?>
 
 <!DOCTYPE html>
@@ -15,10 +13,10 @@ require "init.php";
 </head>
 
 <body>
-  <br />
+  <br>
   <div class="container">
     <h2>Import CSV File into Database using PHP</a></h2>
-    <br />
+    <br>
 
     <form method="POST" enctype='multipart/form-data'>
       <p>
@@ -42,13 +40,14 @@ require "init.php";
       </p>
     </form>
 
-    <br/>
+    <br>
     <label class="text-success"><?php echo $success_msg; ?></label>
     <label class="text-danger"><?php echo $error_msg; ?></label>
 
     <h3>Data From Database:</h3>
-    <br/>
+    <br>
 
+    <!-- Pagination  -->
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         <?php
@@ -59,6 +58,7 @@ require "init.php";
       </ul>
     </nav>
 
+        <!-- Table to show data from Database  -->
     <div class="table-responsive">
       <!-- Table  -->
       <table class="table">
@@ -96,6 +96,6 @@ require "init.php";
       </table>
     </div>
   </div>
+  
 </body>
-
 </html>
